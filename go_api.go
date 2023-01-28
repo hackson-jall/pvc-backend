@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/NYTimes/gziphandler"
 )
 
 func main() {
-	helloWorldFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
+	port := 3000
+	fmt.Println("Starting Server on port", port)
+
+	http.HandleFunc("/hello_world", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello, World"))
 	})
-	compressedHelloWorldFunc := gziphandler.GzipHandler(helloWorldFunc)
-	http.Handle("/hello_world", compressedHelloWorldFunc)
+	http.ListenAndServe(":3000", nil)
 }
