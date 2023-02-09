@@ -1,27 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
-	"strconv"
+
+	"github.com/NYTimes/gziphandler"
 )
 
 func main() {
-	port := 3000
-	fmt.Println("Starting Server on port", port)
+	recipeParserFunc := http.HandlerFunc(ParseRecipe)
+	compressedRecipeParserFunc := gziphandler.GzipHandler(recipeParserFunc)
+	http.Handle("/parse_recipe", compressedRecipeParserFunc)
+	log.Fatal(http.ListenAndServe(":3000", nil))
 
-	http.HandleFunc("/get_mod_3", func(w http.ResponseWriter, r *http.Request) {
-		EnableCors(&w)
-		r.ParseForm()
-		value := r.Form["value"][0]
-		int_value, err := strconv.Atoi(value)
-		if err != nil {
-			fmt.Println(err)
-		}
-		int_value = int_value % 3
-		w.Write([]byte("Value: " + fmt.Sprint(int_value)))
-	})
-	http.ListenAndServe(":3000", nil)
 }
 
 func EnableCors(w *http.ResponseWriter) {

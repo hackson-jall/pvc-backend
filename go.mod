@@ -1,4 +1,4 @@
-module pvc-backend/backend
+module pvc-backend
 
 go 1.18
 
