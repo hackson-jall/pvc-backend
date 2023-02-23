@@ -19,6 +19,7 @@ type Quantity struct {
 }
 
 func ParseRecipe(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	err := r.ParseForm()
 	recipeURL := r.Form.Get("url")
 	requestURL := "https://recipe-parser.azurewebsites.net/api/parse?url=" + recipeURL

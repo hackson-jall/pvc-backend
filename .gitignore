@@ -5,6 +5,10 @@
 *.so
 *.dylib
 tmp/*
+*.sqlite
+*.wsuo
+
+VSWorkspaceState.json
 
 # Test binary, built with `go test -c`
 *.test
