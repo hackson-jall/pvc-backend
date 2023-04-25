@@ -19,6 +19,7 @@ type Quantity struct {
 }
 
 func ParseRecipe(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
 	err := r.ParseForm()
 	recipeURL := r.Form.Get("url")
 	requestURL := "https://recipe-parser.azurewebsites.net/api/parse?url=" + recipeURL
@@ -39,6 +40,18 @@ func ParseRecipe(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		fmt.Println(err)
+	}
+	if result == nil {
+		errorMessage := map[string]interface{}{
+			"error": "Recipe not found",
+		}
+		outputJson, err := json.Marshal(errorMessage)
+		if err != nil {
+			panic(err)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, "%s", outputJson)
+		return
 	}
 	ingredientsRaw := result["recipeIngredient"].([]interface{})
 	ingredients := []Ingredient{}
